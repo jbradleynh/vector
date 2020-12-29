@@ -1461,3 +1461,22 @@
     "result[1].fruit.equals" = "peaches"
     "result[1].veg.equals" = "peas"
     "result[1].0.equals" = "peaches and peas"
+
+[transforms.remap_function_parse_key_value]
+  inputs = []
+  type = "remap"
+  source = '''
+    .result = parse_key_value(.message, field_split = ":", separator = ",", trim_key = "'", trim_value = "<>")
+  '''
+[[tests]]
+  name = "remap_function_parse_key_value"
+  [tests.input]
+    insert_at = "remap_function_parse_key_value"
+    type = "log"
+    [tests.input.log_fields]
+      message = "'zork': <zoog>, 'nonk': <nink>"
+  [[tests.outputs]]
+    extract_from = "remap_function_parse_key_value"
+    [[tests.outputs.conditions]]
+    "result.zork.equals" = "zoog"
+    "result.nonk.equals" = "nink"
